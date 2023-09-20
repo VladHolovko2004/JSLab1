@@ -1,0 +1,220 @@
+Виконання:
+
+Код програми lab1.1.html:
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Мій HTML файл</title>
+</head>
+<body>
+<!-- Підключення файлу laba2.1.js -->
+<script src="lab2.1.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+Код програми lab2.1.js:
+const num = parseFloat(prompt("Введіть число:"));
+const a = parseFloat(prompt("Введіть a:"));
+const b = parseFloat(prompt("Введіть b:"));
+
+// Функція isInteger
+function isInteger(num) {
+    return Number.isInteger(num);
+}
+
+// Функція для перевірки, чи є число простим
+function isPrime(num) {
+    if (num <= 1) return false;
+    if (num <= 3) return true;
+
+    if (num % 2 === 0 || num % 3 === 0) return false; // якщо є залишок то це число не просте
+    for (let i = 5; i * i <= num; i += 6) {
+        if (num % i === 0 || num % (i + 2) === 0) return false;   //6k ± 1, де k - натуральне число
+    }
+    return true;
+}
+//findPrimes
+function findPrimes(a, b) {
+    if (a > b) {
+        console.log("Помилка: 'a' має бути менше або рівне 'b'.");
+        return;
+    }
+    console.log(`Прості числа на інтервалі [${a}, ${b}]:`);
+    for (let i = a; i <= b; i++) {
+        if (isPrime(i)) {
+            console.log(i);
+        }
+    }
+}
+// Виклик функцій
+console.log(`Число ${num} є цілим числом: ${isInteger(num)}`);
+findPrimes(a, b);
+
+Результат:
+ 
+
+Завдання 2
+
+Ознайомитись з реалізацією регулярних виразів у мові JavaScript: https://developer.mozilla.org/ru/docs/Web/JavaScript/Guide/Regular_Expressions Створіть скрипт lab2-2.js, у якому реалізуйте наступні функції:
+
+isIPAddress(ip)	Перевіряє, чи є вказаний рядок ІР-адресою (повертає true або false)
+findRGBA(text)	Знаходить у заданому тексті рядок формату rgba(r, g, b, a) що відповідає кольору у форматі RGBA і повертає його. Якщо такого рядка не знайдено, то повернути null.
+findHexColor(text)	Знаходить у заданому тексті колір у форматі #ABC або #ABCDEF. Якщо не знайдено, то повернути null.
+findTags(text, tag)	Знаходить у заданому тексті усі теги із заданим ім’ям. Приклад використання: let tags = findTags(s, "img");
+findPosNum(text)	Знаходить у тексті усі додатні числа, і повертає їх у вигляді масиву
+findDates(text)	Знаходить у тексті усі дати записані у форматі РРРР-ММ-ДД
+findEmail(text)	Знаходить всі слова в тексті, які є коректними email адресами і повертає їх у вигляді масиву
+
+
+Виконання:
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Мій HTML файл</title>
+</head>
+<body>
+
+<!-- Підключення файлу laba2-2.js -->
+<script src="lab2-2.js"></script>
+
+</body>
+</html>
+
+1
+function isIPAddress(input) {
+    const ipPattern = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+    
+    // Перевірка, чи відповідає введений рядок IP-адресі
+    return ipPattern.test(input);
+}
+
+// Запитуємо користувача про введення тексту
+const inputText = prompt("Введіть текст для перевірки на IP-адресу:");
+
+// Перевіряємо введений текст на IP-адресу і виводимо результат у консоль
+if (isIPAddress(inputText)) {
+    console.log(`Рядок "${inputText}" є IP-адресою.`);
+} else {
+    console.log(`Рядок "${inputText}" не є IP-адресою.`);
+}
+
+ 
+Результат:
+ 
+
+2.
+function findRGBA(text) {
+    const rgbaPattern = /rgba\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*([\d.]+)\s*\)/;
+    const match = text.match(rgbaPattern);
+    return match ? match[0] : null; //шукає всі співпадіння регулярного виразу у тексті
+}
+
+// Приклад використання функції
+const text = "Background color is rgba(0, 0, 0, 0)";
+const rgbaString = findRGBA(text);
+if (rgbaString !== null) {
+    console.log(`Знайдено RGBA: ${rgbaString}`);
+} else {
+    console.log("RGBA не знайдено.");
+}
+
+ 
+
+3
+function findHexColor(text) {
+    const hexColorPattern = /#([0-9a-fA-F]{3}){1,2}\b/g;
+    const matches = text.match(hexColorPattern);
+    return matches ? matches : null;
+}
+
+// Приклад використання функції
+const text = "Background color is #ABC and border color is #123456.";
+const hexColors = findHexColor(text);
+if (hexColors !== null) {
+    console.log("Знайдені кольори в форматі #ABC або #ABCDEF:");
+    console.log(hexColors);
+} else {
+    console.log("Кольори не знайдено.");
+}
+
+
+ 
+
+4.
+function findTags(text, tag) {
+    const tagPattern = new RegExp(`<${tag}\\b[^>]*>`, 'g');
+    const matches = text.match(tagPattern);
+    return matches || [];
+}
+
+// Приклад використання функції
+const s = "<img src='image.jpg'><p>Текст</p><img alt='Picture'><div><img src='another.jpg'></div>";
+const tags = findTags(s, "img");
+console.log("Знайдені теги <img>:");
+console.log(tags);
+
+
+ 
+
+5.
+function findPosNum(text) {
+    const numPattern = /\b\d+\b/g;
+    const matches = text.match(numPattern);
+    const positiveNumbers = [];
+
+    if (matches) {
+        for (const match of matches) {
+            const number = parseInt(match, 10);
+            if (!isNaN(number) && number > 0) {
+                positiveNumbers.push(number);
+            }
+        }
+    }
+
+    return positiveNumbers;
+}
+
+// Приклад використання функції
+const text = "У тексті є числа: 42, -3, 17.5, 1234, і 0.";
+const positiveNums = findPosNum(text);
+console.log("Знайдені додатні числа:");
+console.log(positiveNums);
+
+ 
+
+6.
+function findDates(text) {
+    const datePattern = /\b\d{4}-\d{2}-\d{2}\b/g;
+    const matches = text.match(datePattern);
+    return matches || [];
+}
+
+// Приклад використання функції
+const text = "Текст із датами: 2023-09-20, 2023-10-01, та 2023-08-15.";
+const dates = findDates(text);
+console.log("Знайдені дати у форматі РРРР-ММ-ДД:");
+console.log(dates);
+
+ 
+
+7.
+function findEmail(text) {
+    const emailPattern = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g;
+    const matches = text.match(emailPattern);
+    return matches || [];
+}
+
+// Приклад використання функції
+const text = "Email-адреси: user@example.com, john.doe123@email.co.uk, та invalid.email.";
+const emails = findEmail(text);
+console.log("Знайдені email-адреси:");
+console.log(emails);
+
+
+ 
